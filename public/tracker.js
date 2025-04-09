@@ -61,8 +61,7 @@ const stadiums = [
 ];
 
 // WebSocket URLs
-//const DALYMOUNT_PARK = "wss://cxgmjito89.execute-api.eu-west-1.amazonaws.com/production";
-const DALYMOUNT_PARK = "wss://fu6ntwe8cc.execute-api.eu-west-1.amazonaws.com/production";
+const DALYMOUNT_PARK = "wss://cxgmjito89.execute-api.eu-west-1.amazonaws.com/production";
 const MARVEL_STADIUM = "wss://tgh899snfl.execute-api.ap-southeast-2.amazonaws.com/production";
 const DUBLIN = "wss://fu6ntwe8cc.execute-api.eu-west-1.amazonaws.com/production/";
 const OXFORD = "wss://gk4nvwsrj3.execute-api.eu-west-1.amazonaws.com/production/";
@@ -183,7 +182,6 @@ class Game extends Page {
     this.selectedImage = -1;
     this.topic = null;
     this.stadium = null;
-    this.url = null;
     this.pausedImg = paused;
     this.sendCounter = 0;
     this.sport = "";
@@ -197,7 +195,6 @@ class Game extends Page {
   }
 
   setStadium(url, stadium, selectedImageIndex) {
-    this.url = url;
     this.stadium = stadium;
     this.selectedImage = selectedImageIndex;
     if (selectedImageIndex === 0 || selectedImageIndex === 2) {
@@ -233,8 +230,7 @@ class Game extends Page {
       default:
         this.topic = 'default/stadium/sub';
     }
-}
-
+  }
 
   toJsonRequest() {
     if (!this.topic) {
@@ -249,7 +245,7 @@ class Game extends Page {
     const scaledX = parseFloat((constrainedX * scaleFactorX).toFixed(2));
     const scaledY = parseFloat((constrainedY * scaleFactorY).toFixed(2));
 
-    return JSON.stringify({
+    return {
       topic: this.topic,
       message: {
         T: parseFloat(this.timestamp.toFixed(2)),
@@ -261,8 +257,8 @@ class Game extends Page {
         C: this.conversion,
         R: this.ruck,
         S: this.scrumMaul,
-      },
-    });
+      }
+    };
   }
 
   show() {
@@ -340,29 +336,27 @@ class Game extends Page {
 
       // Normal update.
       this.timestamp = (clock / 1000.0) - this.checkpoint;
-      let msgStr = this.toJsonRequest();
-      if (!msgStr) return;
-      let msgObj = JSON.parse(msgStr);
-      if (msgObj.action) {
-        console.log(`[Live] Sending update #${this.sendCounter++}`, msgStr);
-        this.sentMessages.push(msgObj);
-        // webSendJson(msgStr);
-        fetch('/api/mqtt-publish', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: msgStr  // which is already JSON
+      let payload = this.toJsonRequest();
+      if (!payload) return;
+      
+      console.log(`[Live] Sending update #${this.sendCounter++}`, payload);
+      this.sentMessages.push(payload);
+      
+      fetch('/api/mqtt-publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('Message published successfully!');
+          } else {
+            console.error('Publish error:', data.error);
+          }
         })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              console.log('Message published successfully!');
-            } else {
-              console.error('Publish error:', data.error);
-            }
-          })
-          .catch(err => console.error('Network error:', err));
+        .catch(err => console.error('Network error:', err));
 
-      }
       // Reset ephemeral fields
       this.passKick = 0;
       this.tryScore = 0;
@@ -439,29 +433,26 @@ class Game extends Page {
 
             // Send immediate update with scrum=1
             this.timestamp = (millis() / 1000.0) - this.checkpoint;
-            let scrumStr = this.toJsonRequest();
-            if (scrumStr) {
-              let msgObj = JSON.parse(scrumStr);
-              if (msgObj.action) {
-                console.log("[SCRUM] sending scrum=1 msg => now freeze");
-                this.sentMessages.push(msgObj);
-                // webSendJson(scrumStr);
-                fetch('/api/mqtt-publish', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: scrumStr  // which is already JSON
+            let payload = this.toJsonRequest();
+            if (payload) {
+              console.log("[SCRUM] sending scrum=1 msg => now freeze");
+              this.sentMessages.push(payload);
+              
+              fetch('/api/mqtt-publish', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              })
+                .then(response => response.json())
+                .then(data => {
+                  if (data.success) {
+                    console.log('Message published successfully!');
+                  } else {
+                    console.error('Publish error:', data.error);
+                  }
                 })
-                  .then(response => response.json())
-                  .then(data => {
-                    if (data.success) {
-                      console.log('Message published successfully!');
-                    } else {
-                      console.error('Publish error:', data.error);
-                    }
-                  })
-                  .catch(err => console.error('Network error:', err));
-                this.addActionMessage("Scrum", 6000);
-              }
+                .catch(err => console.error('Network error:', err));
+              this.addActionMessage("Scrum", 6000);
             }
 
             this.scrumFreeze = true;
@@ -487,12 +478,10 @@ class Game extends Page {
 
   start() {
     this.state = State.PAUSED;
-    // webConnect(this.url);
   }
 
   finish() {
     this.state = State.FINISHED;
-    // webDisconnect();
   }
 }
 
@@ -825,7 +814,7 @@ class PlaybackMatchPageRugby extends Page {
       let firstMsg = this.jsonArray[0].message;
       this.setBallTo(firstMsg);
       let homeMsg = {
-        action: 'dublin_IRL_sendMessage',
+        topic: 'aviva_IRL/sub',
         message: {
           T: firstMsg.T,
           X: firstMsg.X,
@@ -838,11 +827,11 @@ class PlaybackMatchPageRugby extends Page {
           S: firstMsg.S
         }
       };
-      // webSendJson(JSON.stringify(homeMsg));
+      
       fetch('/api/mqtt-publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: homeMsg  // which is already JSON
+        body: JSON.stringify(homeMsg)
       })
         .then(response => response.json())
         .then(data => {
@@ -903,9 +892,6 @@ class PlaybackMatchPageRugby extends Page {
     this.counter = 0;
     this.totalPausedDuration = 0;
     this.startPlaybackTime = millis();
-
-    // Connect for sending "homing" updates
-    // webConnect(DUBLIN);
   }
 
   addActionMessage(msg, duration) {
@@ -992,11 +978,11 @@ class PlaybackMatchPageRugby extends Page {
         S: msg.S
       }
     };
-    // webSendJson(JSON.stringify(playbackMsg));
+    
     fetch('/api/mqtt-publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: playbackMsg  // which is already JSON
+      body: JSON.stringify(playbackMsg)
     })
       .then(response => response.json())
       .then(data => {
@@ -1117,7 +1103,7 @@ class PlaybackMatchPageSoccer extends Page {
       let firstMsg = this.jsonArray[0].message;
       this.setBallTo(firstMsg);
       let homeMsg = {
-        action: 'dublin_IRL_sendMessage',
+        topic: 'aviva_IRL/sub',
         message: {
           T: firstMsg.T,
           X: firstMsg.X,
@@ -1130,11 +1116,11 @@ class PlaybackMatchPageSoccer extends Page {
           S: firstMsg.S
         }
       };
-      // webSendJson(JSON.stringify(homeMsg));
+      
       fetch('/api/mqtt-publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: homeMsg  // which is already JSON
+        body: JSON.stringify(homeMsg)
       })
         .then(response => response.json())
         .then(data => {
@@ -1195,9 +1181,6 @@ class PlaybackMatchPageSoccer extends Page {
     this.counter = 0;
     this.totalPausedDuration = 0;
     this.startPlaybackTime = millis();
-
-    // Connect so we can send homing
-    // webConnect(DUBLIN);
   }
 
   addActionMessage(msg, duration) {
@@ -1270,8 +1253,9 @@ class PlaybackMatchPageSoccer extends Page {
       this.addActionMessage("Scrum", 1000);
     }
 
+    // TODO: This surely shouldn't be hardcoded, artefact from David
     let playbackMsg = {
-      action: 'dublin_IRL_sendMessage',
+      topic: 'aviva_IRL/sub',
       message: {
         T: msg.T,
         X: msg.X,
@@ -1284,11 +1268,11 @@ class PlaybackMatchPageSoccer extends Page {
         S: msg.S
       }
     };
-    // webSendJson(JSON.stringify(playbackMsg));
+    
     fetch('/api/mqtt-publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: palybackMsg  // which is already JSON
+      body: JSON.stringify(playbackMsg)
     })
       .then(response => response.json())
       .then(data => {
@@ -1371,35 +1355,6 @@ class PlaybackMatchPageSoccer extends Page {
 let requests = [];
 let socket = null;
 
-// function webConnect(uri) {
-//   if (socket && socket.readyState === WebSocket.OPEN) return;
-//   socket = new WebSocket(uri);
-//   socket.onopen = () => connectionLost = false;
-//   socket.onclose = () => connectionLost = true;
-//   socket.onerror = (error) => console.error('WebSocket error:', error);
-// }
-
-// function webDisconnect() {
-//   if (!socket || socket.readyState !== WebSocket.OPEN) return;
-//   while (requests.length > 0) {
-//     if (socket.readyState === WebSocket.OPEN) socket.send(requests.shift());
-//   }
-//   socket.close();
-// }
-
-// function webSendJson(json) {
-//   console.log('Sending to MQTT:', json);
-//   requests.push(json);
-// }
-
-// function webThread() {
-//   setInterval(() => {
-//     if (requests.length > 0 && socket?.readyState === WebSocket.OPEN) {
-//       socket.send(requests.shift());
-//     }
-//   }, 100);
-// }
-
 function checkInternetConnectionThread() {
   let wasConnected = navigator.onLine;
   setInterval(() => {
@@ -1412,7 +1367,6 @@ function checkInternetConnectionThread() {
 }
 
 function webSetup() {
-  webThread();
   checkInternetConnectionThread();
   window.addEventListener('online', () => connectionLost = false);
   window.addEventListener('offline', () => connectionLost = true);
