@@ -60,11 +60,25 @@ const stadiums = [
   'Aviva - Dublin',
 ];
 
-// WebSocket URLs
-const DALYMOUNT_PARK = "wss://cxgmjito89.execute-api.eu-west-1.amazonaws.com/production";
-const MARVEL_STADIUM = "wss://tgh899snfl.execute-api.ap-southeast-2.amazonaws.com/production";
-const DUBLIN = "wss://fu6ntwe8cc.execute-api.eu-west-1.amazonaws.com/production/";
-const OXFORD = "wss://gk4nvwsrj3.execute-api.eu-west-1.amazonaws.com/production/";
+// Stadium to MQTT topic mapping
+const STADIUM_TOPICS = {
+  'Demonstration': 'demo_IRL/sub',
+  'Marvel Stadium': 'marvel_AUS/sub',
+  'Port Vale': 'portvale_UK/sub',
+  'Oxford United': 'oxford_UK/sub',
+  'Aviva Stadium': 'aviva_IRL/sub',
+  'Aviva - Dublin': 'avivaDublin_IRL/sub',
+};
+
+// Stadium to image index mapping
+const STADIUM_IMAGES = {
+  'Demonstration': 0,
+  'Marvel Stadium': 1,
+  'Port Vale': 0,
+  'Oxford United': 0,
+  'Aviva Stadium': 3,
+  'Aviva - Dublin': 3,
+};
 
 // Possession constants
 const POSSESSION_NEUTRAL = 66;
@@ -208,28 +222,7 @@ class Game extends Page {
       this.pausedImg = rugbyPaused;
     }
 
-    switch (this.stadium) {
-      case 'Demonstration':
-        this.topic = 'demo_IRL/sub';
-        break;
-      case 'Marvel Stadium':
-        this.topic = 'marvel_AUS/sub';
-        break;
-      case 'Port Vale':
-        this.topic = 'portvale_UK/sub';
-        break;
-      case 'Oxford United':
-        this.topic = 'oxford_UK/sub';
-        break;
-      case 'Aviva Stadium':
-        this.topic = 'aviva_IRL/sub';
-        break;
-      case 'Aviva - Dublin':
-        this.topic = 'avivaDublin_IRL/sub';
-        break;
-      default:
-        this.topic = 'default/stadium/sub';
-    }
+    this.topic = STADIUM_TOPICS[this.stadium] || 'default/stadium/sub';
   }
 
   toJsonRequest() {
@@ -567,38 +560,10 @@ class MainPage extends Page {
 
   onSelectStadium(selectedStadium) {
     const stadiumName = stadiums[selectedStadium];
-    let url = null;
-    let imgIndex = 0;
-
-    switch (selectedStadium) {
-      case 0:
-        url = DALYMOUNT_PARK;
-        imgIndex = 0;
-        break;
-      case 1:
-        url = MARVEL_STADIUM;
-        imgIndex = 1;
-        break;
-      case 2: // Port Vale
-        url = DUBLIN;
-        imgIndex = 0;
-        break;
-      case 3: // Oxford United (identical to Port Vale)
-        url = OXFORD;
-        imgIndex = 0;
-        break;
-      case 4:
-        url = DALYMOUNT_PARK;
-        imgIndex = 3;
-        break;
-      case 5:
-        url = DUBLIN;
-        imgIndex = 3;
-        break;
-    }
+    const imgIndex = STADIUM_IMAGES[stadiumName] || 0;
 
     if (game) {
-      game.setStadium(url, stadiumName, imgIndex);
+      game.setStadium(null, stadiumName, imgIndex);
       console.log(`Selected stadium: ${stadiumName}, Image index: ${imgIndex}`);
     }
   }
