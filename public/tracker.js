@@ -458,6 +458,7 @@ class Game extends Page {
 
   start() {
     this.state = State.PAUSED;
+    // webConnect(this.url);
   }
 
   finish() {
@@ -859,6 +860,9 @@ class PlaybackMatchPageRugby extends Page {
     this.counter = 0;
     this.totalPausedDuration = 0;
     this.startPlaybackTime = millis();
+
+    // Connect for sending "homing" updates
+    // webConnect(DUBLIN);
   }
 
   addActionMessage(msg, duration) {
@@ -1120,6 +1124,9 @@ class PlaybackMatchPageSoccer extends Page {
     this.counter = 0;
     this.totalPausedDuration = 0;
     this.startPlaybackTime = millis();
+
+    // Connect so we can send homing
+    // webConnect(DUBLIN);
   }
 
   addActionMessage(msg, duration) {
@@ -1279,6 +1286,34 @@ class PlaybackMatchPageSoccer extends Page {
 let requests = [];
 let socket = null;
 
+// function webConnect(uri) {
+//   if (socket && socket.readyState === WebSocket.OPEN) return;
+//   socket = new WebSocket(uri);
+//   socket.onopen = () => connectionLost = false;
+//   socket.onclose = () => connectionLost = true;
+//   socket.onerror = (error) => console.error('WebSocket error:', error);
+// }
+
+// function webDisconnect() {
+//   if (!socket || socket.readyState !== WebSocket.OPEN) return;
+//   while (requests.length > 0) {
+//     if (socket.readyState === WebSocket.OPEN) socket.send(requests.shift());
+//   }
+//   socket.close();
+// }
+
+// function webSendJson(json) {
+//   console.log('Sending to MQTT:', json);
+//   requests.push(json);
+// }
+
+// function webThread() {
+//   setInterval(() => {
+//     if (requests.length > 0 && socket?.readyState === WebSocket.OPEN) {
+//       socket.send(requests.shift());
+//     }
+//   }, 100);
+// }
 
 function checkInternetConnectionThread() {
   let wasConnected = navigator.onLine;
@@ -1292,6 +1327,7 @@ function checkInternetConnectionThread() {
 }
 
 function webSetup() {
+  webThread();
   checkInternetConnectionThread();
   window.addEventListener('online', () => connectionLost = false);
   window.addEventListener('offline', () => connectionLost = true);
@@ -1321,6 +1357,7 @@ function setup() {
   currentPage.show();
 
   frameRate(60);
+  // webSetup();
 }
 
 function draw() {
