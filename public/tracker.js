@@ -83,40 +83,40 @@ function preload() {
   backgroundImg = loadImage('images/background.png');
 
   // Playback pause overlay
-  playbackPauseImg = loadImage('images/playback pause.png');
+  playbackPauseImg = loadImage('images/playbackPause.png');
 
   // Pitches
-  images[0] = loadImage('images/football pitch.png');  // Soccer/Football
-  images[1] = loadImage('images/afl pitch.png');       // AFL
-  images[2] = loadImage('images/football pitch.png');  // Another soccer if needed
-  images[3] = loadImage('images/rugby pitch.png');     // Rugby
+  images[0] = loadImage('images/footballPitch.png');  // Soccer/Football
+  images[1] = loadImage('images/aflPitch.png');       // AFL
+  images[2] = loadImage('images/footballPitch.png');  // Another soccer if needed
+  images[3] = loadImage('images/rugbyPitch.png');     // Rugby
 
   // Pause images
-  paused = loadImage('images/football pause.png');
-  rugbyPaused = loadImage('images/rugby pause.png');
-  aflPaused = loadImage('images/afl pause.png');
+  paused = loadImage('images/footballPause.png');
+  rugbyPaused = loadImage('images/rugbyPause.png');
+  aflPaused = loadImage('images/aflPause.png');
 
   // Ball images
-  ballFootballHome = loadImage('images/football home.png');
-  ballFootballAway = loadImage('images/football away.png');
-  ballAFLHome = loadImage('images/afl home.png');
-  ballAFLAway = loadImage('images/afl away.png');
-  ballRugbyHome = loadImage('images/rugby home.png');
-  ballRugbyAway = loadImage('images/rugby away.png');
+  ballFootballHome = loadImage('images/footballHome.png');
+  ballFootballAway = loadImage('images/footballAway.png');
+  ballAFLHome = loadImage('images/aflHome.png');
+  ballAFLAway = loadImage('images/aflAway.png');
+  ballRugbyHome = loadImage('images/rugbyHome.png');
+  ballRugbyAway = loadImage('images/rugbyAway.png');
 
   // Rugby playback backgrounds
-  playbackBgRugby = loadImage('images/playback background rugby.png');
-  playbackBgMatch1Rugby = loadImage('images/playback background match1 rugby.png');
-  playbackBgMatch2Rugby = loadImage('images/playback background match2 rugby.png');
-  playbackBgMatch3Rugby = loadImage('images/playback background match3 rugby.png');
-  playbackBgMatch4Rugby = loadImage('images/playback background match4 rugby.png');
+  playbackBgRugby = loadImage('images/playbackBackgroundRugby.png');
+  playbackBgMatch1Rugby = loadImage('images/playbackBackgroundMatch1Rugby.png');
+  playbackBgMatch2Rugby = loadImage('images/playbackBackgroundMatch2Rugby.png');
+  playbackBgMatch3Rugby = loadImage('images/playbackBackgroundMatch3Rugby.png');
+  playbackBgMatch4Rugby = loadImage('images/playbackBackgroundMatch4Rugby.png');
 
   // Soccer playback backgrounds
-  playbackBgSoccer = loadImage('images/playback background soccer.png');
-  playbackBgMatch1Soccer = loadImage('images/playback background match1 soccer.png');
-  playbackBgMatch2Soccer = loadImage('images/playback background match2 soccer.png');
-  playbackBgMatch3Soccer = loadImage('images/playback background match3 soccer.png');
-  playbackBgMatch4Soccer = loadImage('images/playback background match4 soccer.png');
+  playbackBgSoccer = loadImage('images/playbackBackgroundSoccer.png');
+  playbackBgMatch1Soccer = loadImage('images/playbackBackgroundMatch1Soccer.png');
+  playbackBgMatch2Soccer = loadImage('images/playbackBackgroundMatch2Soccer.png');
+  playbackBgMatch3Soccer = loadImage('images/playbackBackgroundMatch3Soccer.png');
+  playbackBgMatch4Soccer = loadImage('images/playbackBackgroundMatch4Soccer.png');
 }
 
 //////////////////////////////
@@ -181,7 +181,7 @@ class Game extends Page {
     this.timestamp = 0;
     this.checkpoint = 0;
     this.selectedImage = -1;
-    this.action = null;
+    this.topic = null;
     this.stadium = null;
     this.url = null;
     this.pausedImg = paused;
@@ -213,31 +213,31 @@ class Game extends Page {
 
     switch (this.stadium) {
       case 'Demonstration':
-        this.action = 'dalymount_IRL_sendMessage';
+        this.topic = 'demo_IRL/sub';
         break;
       case 'Marvel Stadium':
-        this.action = 'marvel_AUS_sendMessage';
+        this.topic = 'marvel_AUS/sub';
         break;
       case 'Port Vale':
-        this.action = 'dublin_IRL_sendMessage';
+        this.topic = 'portvale_UK/sub';
         break;
-      case 'Oxford United':  // Oxford United behaves like Port Vale
-        this.action = 'oxford_UK_sendMessage';
+      case 'Oxford United':
+        this.topic = 'oxford_UK/sub';
         break;
       case 'Aviva Stadium':
-        this.action = 'dalymount_IRL_sendMessage';
+        this.topic = 'aviva_IRL/sub';
         break;
       case 'Aviva - Dublin':
-        this.action = 'dublin_IRL_sendMessage';
+        this.topic = 'avivaDublin_IRL/sub';
         break;
       default:
-        console.log("Unknown stadium, defaulting action to dalymount_IRL_sendMessage");
-        this.action = 'dalymount_IRL_sendMessage';
+        this.topic = 'default/stadium/sub';
     }
-  }
+}
+
 
   toJsonRequest() {
-    if (!this.action) {
+    if (!this.topic) {
       console.log("Can't send message without stadium");
       return "";
     }
@@ -250,7 +250,7 @@ class Game extends Page {
     const scaledY = parseFloat((constrainedY * scaleFactorY).toFixed(2));
 
     return JSON.stringify({
-      action: this.action,
+      topic: this.topic,
       message: {
         T: parseFloat(this.timestamp.toFixed(2)),
         X: scaledX,
@@ -347,6 +347,21 @@ class Game extends Page {
         console.log(`[Live] Sending update #${this.sendCounter++}`, msgStr);
         this.sentMessages.push(msgObj);
         // webSendJson(msgStr);
+        fetch('/api/mqtt-publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: msgStr  // which is already JSON
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              console.log('Message published successfully!');
+            } else {
+              console.error('Publish error:', data.error);
+            }
+          })
+          .catch(err => console.error('Network error:', err));
+
       }
       // Reset ephemeral fields
       this.passKick = 0;
@@ -431,6 +446,20 @@ class Game extends Page {
                 console.log("[SCRUM] sending scrum=1 msg => now freeze");
                 this.sentMessages.push(msgObj);
                 // webSendJson(scrumStr);
+                fetch('/api/mqtt-publish', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: scrumStr  // which is already JSON
+                })
+                  .then(response => response.json())
+                  .then(data => {
+                    if (data.success) {
+                      console.log('Message published successfully!');
+                    } else {
+                      console.error('Publish error:', data.error);
+                    }
+                  })
+                  .catch(err => console.error('Network error:', err));
                 this.addActionMessage("Scrum", 6000);
               }
             }
@@ -810,6 +839,20 @@ class PlaybackMatchPageRugby extends Page {
         }
       };
       // webSendJson(JSON.stringify(homeMsg));
+      fetch('/api/mqtt-publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: homeMsg  // which is already JSON
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('Message published successfully!');
+          } else {
+            console.error('Publish error:', data.error);
+          }
+        })
+        .catch(err => console.error('Network error:', err));
       console.log('Homing message sent:', homeMsg);
     }
   }
@@ -936,7 +979,7 @@ class PlaybackMatchPageRugby extends Page {
     }
 
     let playbackMsg = {
-      action: 'dublin_IRL_sendMessage',
+      topic: 'aviva_IRL/sub',
       message: {
         T: msg.T,
         X: msg.X,
@@ -950,6 +993,20 @@ class PlaybackMatchPageRugby extends Page {
       }
     };
     // webSendJson(JSON.stringify(playbackMsg));
+    fetch('/api/mqtt-publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: playbackMsg  // which is already JSON
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Message published successfully!');
+        } else {
+          console.error('Publish error:', data.error);
+        }
+      })
+      .catch(err => console.error('Network error:', err));
     console.log('Playback (Rugby) => Dalymount:', playbackMsg);
   }
 
@@ -1074,6 +1131,20 @@ class PlaybackMatchPageSoccer extends Page {
         }
       };
       // webSendJson(JSON.stringify(homeMsg));
+      fetch('/api/mqtt-publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: homeMsg  // which is already JSON
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('Message published successfully!');
+          } else {
+            console.error('Publish error:', data.error);
+          }
+        })
+        .catch(err => console.error('Network error:', err));
       console.log('Homing message sent:', homeMsg);
     }
   }
@@ -1214,6 +1285,20 @@ class PlaybackMatchPageSoccer extends Page {
       }
     };
     // webSendJson(JSON.stringify(playbackMsg));
+    fetch('/api/mqtt-publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: palybackMsg  // which is already JSON
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Message published successfully!');
+        } else {
+          console.error('Publish error:', data.error);
+        }
+      })
+      .catch(err => console.error('Network error:', err));
     console.log('Playback (Soccer) => Dalymount:', playbackMsg);
   }
 
