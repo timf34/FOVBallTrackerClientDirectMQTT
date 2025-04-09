@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FOV Ball Tracker</title>
+  <style>
+    #canvas-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    #ui-container {
+      position: absolute;
+      top: 63%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .custom-dropdown {
+      background-color: #ffffff;
+      color: #000000;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      padding: 12px 16px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      width: 550px;
+      height: 60px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .start-button {
+      background-color: #008037;
+      color: #FFFFFF;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 200px;
+      height: 60px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .start-button:hover { background-color: #006628; }
+    .control-button { background-color: #333; color: #fff; font-size: 18px; padding: 10px 20px; border-radius: 8px; margin: 10px; }
+    .control-button:hover { background-color: #555; }
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+  <!-- p5 core -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+  <!-- p5 dom -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.dom.min.js"></script>
+  <!-- p5 sound -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+</head>
+
+<body>
+  <div id="canvas-container">
+    <div id="ui-container"></div>
+  </div>
+
+  <!-- Our main code -->
+  <script src="tracker.js"></script>
+</body>
+</html>

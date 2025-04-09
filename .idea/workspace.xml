@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="41a801d3-fd5b-48f4-8b30-c481a348fb78" name="Changes" comment="fixed the name of our prerecorded game" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2oimyXLrAlSHH630aiiNeSwJo3a" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/timf3/VSCode/ball-tracker-web-client&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="41a801d3-fd5b-48f4-8b30-c481a348fb78" name="Changes" comment="" />
+      <created>1731361025097</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731361025097</updated>
+      <workItem from="1731361026137" duration="88000" />
+      <workItem from="1731411719656" duration="2017000" />
+      <workItem from="1731929437976" duration="57000" />
+      <workItem from="1734126122975" duration="5179000" />
+      <workItem from="1734152996949" duration="1215000" />
+      <workItem from="1734214397659" duration="7000" />
+      <workItem from="1734370021918" duration="1626000" />
+      <workItem from="1734459057075" duration="9000" />
+    </task>
+    <task id="LOCAL-00001" summary="removed duplicate and unneccesary key from message">
+      <option name="closed" value="true" />
+      <created>1731412077654</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731412077654</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added mouse button 4 for pass and a README.md">
+      <option name="closed" value="true" />
+      <created>1731413599741</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731413599741</updated>
+    </task>
+    <task id="LOCAL-00003" summary="added mouse button 3 for goal">
+      <option name="closed" value="true" />
+      <created>1731413680731</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731413680731</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added mouse button 3 for goal with README.md instructions">
+      <option name="closed" value="true" />
+      <created>1731413757062</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1731413757062</updated>
+    </task>
+    <task id="LOCAL-00005" summary="centred the stadium selector">
+      <option name="closed" value="true" />
+      <created>1734127050579</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1734127050579</updated>
+    </task>
+    <task id="LOCAL-00006" summary="working match playback however the timing is not working well">
+      <option name="closed" value="true" />
+      <created>1734131529357</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1734131529357</updated>
+    </task>
+    <task id="LOCAL-00007" summary="plays back in real time">
+      <option name="closed" value="true" />
+      <created>1734131919199</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1734131919199</updated>
+    </task>
+    <task id="LOCAL-00008" summary="renamed match1.json to carlton_kilda_25_8_24.json">
+      <option name="closed" value="true" />
+      <created>1734370348871</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1734370348871</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fixed the name of our prerecorded game">
+      <option name="closed" value="true" />
+      <created>1734374254578</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1734374254578</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="removed duplicate and unneccesary key from message" />
+    <MESSAGE value="added mouse button 4 for pass and a README.md" />
+    <MESSAGE value="added mouse button 3 for goal" />
+    <MESSAGE value="added mouse button 3 for goal with README.md instructions" />
+    <MESSAGE value="centred the stadium selector" />
+    <MESSAGE value="working match playback however the timing is not working well" />
+    <MESSAGE value="plays back in real time" />
+    <MESSAGE value="renamed match1.json to carlton_kilda_25_8_24.json" />
+    <MESSAGE value="fixed the name of our prerecorded game" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed the name of our prerecorded game" />
+  </component>
+</project>
