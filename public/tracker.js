@@ -50,35 +50,36 @@ const State = {
   FINISHED: 'FINISHED',
 };
 
-// Stadium names - Added "Oxford United" after "Port Vale"
-const stadiums = [
-  'Demonstration',
-  'Marvel Stadium',
-  'Port Vale',
-  'Oxford United',
-  'Aviva Stadium',
-  'Aviva - Dublin',
-];
-
-// Stadium to MQTT topic mapping
-const STADIUM_TOPICS = {
-  'Demonstration': 'demo_IRL/sub',
-  'Marvel Stadium': 'marvel_AUS/sub',
-  'Port Vale': 'portvale_UK/sub',
-  'Oxford United': 'oxford_UK/sub',
-  'Aviva Stadium': 'aviva_IRL/sub',
-  'Aviva - Dublin': 'avivaDublin_IRL/sub',
+// Stadium configuration
+const STADIUMS = {
+  'Demonstration': {
+    topic: 'demo_IRL/sub',
+    imageIndex: 0
+  },
+  'Marvel Stadium': {
+    topic: 'marvel_AUS/sub',
+    imageIndex: 1
+  },
+  'Port Vale': {
+    topic: 'portvale_UK/sub',
+    imageIndex: 0
+  },
+  'Oxford United': {
+    topic: 'oxford_UK/sub',
+    imageIndex: 0
+  },
+  'Aviva Stadium': {
+    topic: 'aviva_IRL/sub',
+    imageIndex: 3
+  },
+  'Aviva - Dublin': {
+    topic: 'avivaDublin_IRL/sub',
+    imageIndex: 3
+  }
 };
 
-// Stadium to image index mapping
-const STADIUM_IMAGES = {
-  'Demonstration': 0,
-  'Marvel Stadium': 1,
-  'Port Vale': 0,
-  'Oxford United': 0,
-  'Aviva Stadium': 3,
-  'Aviva - Dublin': 3,
-};
+// Get array of stadium names for UI
+const stadiums = Object.keys(STADIUMS);
 
 // Possession constants
 const POSSESSION_NEUTRAL = 66;
@@ -222,7 +223,7 @@ class Game extends Page {
       this.pausedImg = rugbyPaused;
     }
 
-    this.topic = STADIUM_TOPICS[this.stadium] || 'default/stadium/sub';
+    this.topic = STADIUMS[this.stadium]?.topic || 'default/stadium/sub';
   }
 
   toJsonRequest() {
@@ -560,7 +561,7 @@ class MainPage extends Page {
 
   onSelectStadium(selectedStadium) {
     const stadiumName = stadiums[selectedStadium];
-    const imgIndex = STADIUM_IMAGES[stadiumName] || 0;
+    const imgIndex = STADIUMS[stadiumName].imageIndex;
 
     if (game) {
       game.setStadium(null, stadiumName, imgIndex);
