@@ -73,7 +73,7 @@ const STADIUMS = {
     imageIndex: 3
   },
   'Aviva - Dublin': {
-    topic: 'avivaDublin_IRL/sub',
+    topic: 'dalymount_IRL/sub',
     imageIndex: 3
   }
 };
