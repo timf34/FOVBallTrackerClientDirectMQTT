@@ -26,7 +26,7 @@ app.post('/api/mqtt-publish', async (req, res) => {
       caCert: AWS_IOT_CA,
       clientId: `server-${Date.now()}`,
       host: AWS_IOT_ENDPOINT,
-      region: 'eu-west-1'
+      region: 'ap-southeast-2'
     });
 
     await new Promise((resolve, reject) => {
